@@ -1,3 +1,7 @@
+#################### Integrantes #####################
+# Christian Fernando Rodriguez Rodriguez
+# Miguel David Benavides Galindo
+
 import cv2
 import numpy as np
 import os
