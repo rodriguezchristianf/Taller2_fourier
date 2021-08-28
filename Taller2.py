@@ -1,6 +1,6 @@
 #################### Integrantes #####################
-# Christian Fernando Rodriguez Rodriguez
-# Miguel David Benavides Galindo
+# Christian Fernando Rodriguez Rodriguez rodriguezchristianf@javeriana.edu.co
+# Miguel David Benavides Galindo md_benavidesg@javeriana.edu.co
 
 import cv2
 import numpy as np
@@ -47,11 +47,12 @@ class thetaFilter:
                     low_pass_mask[i,j] = 1
                 if(iteracion[i,j] >= inf_2 and iteracion[i,j]<=sup_2):              # Condición de la máscara para el angulo tetha en el intervalo delta_theta + 180
                     low_pass_mask[i,j] = 1
+        low_pass_mask[int(num_rows/2),int(num_rows/2)] = 1
         self.mask = low_pass_mask
-        # cv2.imshow("original image",self.image_gray)                                # Imagen Original (grises)
-        # cv2.imshow("Spectral image",self.image_fft_view)
-        # cv2.imshow("Filter frequency response", 255 * self.mask)                    # Máscara para transformar
-        # cv2.waitKey(0)  
+        cv2.imshow("original image",self.image_gray)                                # Imagen Original (grises)
+        cv2.imshow("Spectral image",self.image_fft_view)
+        cv2.imshow("Filter frequency response", 255 * self.mask)                    # Máscara para transformar
+        cv2.waitKey(0)  
         return self.image_gray_fft_shift ,self.mask                                                        # Máscara usada para el filtrado en la transformada
         
     def filtering(self):  # can also use high or band pass mask
@@ -59,7 +60,8 @@ class thetaFilter:
         image_filtered = np.fft.ifft2(np.fft.fftshift(fft_filtered))
         image_filtered = np.absolute(image_filtered)                                # Imagen filtrada
         self.image_filtered = image_filtered/np.max(image_filtered)
-        cv2.imshow("Original image", self.image_gray)                               # Imagen Original (Grises)
+        cv2.imshow("Original image", self.image_gray)       
+        cv2.imshow("Spectral image",self.image_fft_view)                        # Imagen Original (Grises)
         cv2.imshow("Mask for transformation", 255 * self.mask)                      # Máscara para transformar
         cv2.imshow("Filtered image", self.image_filtered)                           # Imagen Filtrada
         cv2.waitKey(0)
@@ -105,7 +107,7 @@ def bank_image(ruta,file):
     temp_mask = np.zeros((image_gray.shape[0],image_gray.shape[1]))
     for k in theta:
         temp_mask = temp.set_theta(k, delta_theta)[1] + temp_mask                 # Iteración de los ángulos
-    fft_filtered = temp.set_theta(k, delta_theta)[0] * temp_mask                       # Filtrado en espectro según mascara de la transformada
+        fft_filtered = temp.set_theta(k, delta_theta)[0] * temp_mask                       # Filtrado en espectro según mascara de la transformada
     image_filtered = np.fft.ifft2(np.fft.fftshift(fft_filtered))
     image_filtered = np.absolute(image_filtered)                                  # Imagen filtrada
     image_filtered = image_filtered/np.max(image_filtered)
@@ -114,7 +116,7 @@ def bank_image(ruta,file):
 #################           parte b         #######################
 
 # El usuario puede elegir qué index del listado files quiere visualizar 
-index = 0
+index = 1
 bank_image_filtered = bank_image(ruta,files[index])
 cv2.imshow("Original_Image %s!" % bank_image_filtered[3], bank_image_filtered[0])                     # Original imagen
 cv2.imshow("Mask Filter %s!" % bank_image_filtered[3], bank_image_filtered[1])                        # Máscara creada con los 4 ángulos
